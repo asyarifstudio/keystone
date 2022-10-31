@@ -37,8 +37,16 @@ endif()
 
 set(USE_RUST_SM FALSE CACHE BOOL "Use Rust version of the security monitor.")
 set(SM_CONFIGURE_ARGS --enable-opt=2 CACHE STRING "Security Monitor configure script arguments")
-set(SM_PLATFORM "generic" CACHE STRING "Board name for SM hardware-specific functions")
-set(platform ${SM_PLATFORM})
+if(cva6)
+  set(SM_PLATFORM "fpga/ariane" CACHE STRING "Using OpenSBI FPGA/ARIANE Platform")
+  set(platform ${SM_PLATFORM})
+  set(platform_dir opensbi/platform/${platform})
+else()
+  set(SM_PLATFORM "generic" CACHE STRING "Board name for SM hardware-specific functions")
+  set(platform ${SM_PLATFORM})
+  set(platform_dir plat/${platform})
+endif()
+
 message(STATUS "platform=${platform}")
 
 set(LINUX_SIFIVE FALSE CACHE BOOL "Build linux for sifive")
@@ -246,7 +254,7 @@ add_custom_target("driver" ALL DEPENDS ${driver_srcdir} ${linux_srcdir} "linux-s
 
 add_patch("sm/opensbi" "opensbi-firmware-secure-boot.patch" ${sm_srcdir}/opensbi sm_patches)
 add_custom_target("sm" ALL DEPENDS "linux" ${sm_wrkdir_exists} ${sm_patches} WORKING_DIRECTORY ${sm_wrkdir}
-  COMMAND $(MAKE) -C ${sm_srcdir}/opensbi O=${sm_wrkdir} PLATFORM_DIR=${sm_srcdir}/plat/${platform}
+  COMMAND $(MAKE) -C ${sm_srcdir}/opensbi O=${sm_wrkdir} PLATFORM_DIR=${sm_srcdir}/${platform_dir}
   CROSS_COMPILE=riscv${BITS}-unknown-elf- FW_PAYLOAD_PATH=${linux_image} FW_PAYLOAD=y PLATFORM_RISCV_XLEN=${BITS}
   PLATFORM_RISCV_ISA=${ISA} PLATFORM_RISCV_ABI=${ABI}
   COMMENT "Building sm"
