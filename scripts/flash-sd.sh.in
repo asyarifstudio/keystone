@@ -1,0 +1,40 @@
+
+#check SD Device has been provide
+if [ $# -eq 0 ]; then
+    echo "You must provide the SD device path"
+fi
+
+#check the path exist
+SDDEVICE=$1
+if ! [ -b $SDDEVICE ]; then
+    echo "Path does not exist or is not block device"
+    unset SDDEVICE
+fi
+
+
+if ! [ -z "$SDDEVICE" ]; then
+    PAYLOAD=@sm_wrkdir@/platform/ariane/firmware/fw_payload.bin
+    PAYLOAD_SECTOR_START=2048
+    PAYLOAD_SECTOR_SIZE=$(ls -l --block-size=1 $PAYLOAD | cut -d " " -f5)
+    PAYLOAD_SECTOR_END=$(echo $PAYLOAD_SECTOR_START+$PAYLOAD_SECTOR_SIZE | bc)
+    SDDEVICE_PART1=${SDDEVICE}1
+    SDDEVICE_PART2=${SDDEVICE}2
+
+    #information
+    echo "Summary of payload information"
+    echo $SDDEVICE
+    echo $PAYLOAD
+    echo $PAYLOAD_SECTOR_START
+    echo $PAYLOAD_SECTOR_SIZE
+    echo $PAYLOAD_SECTOR_END
+    echo $SDDEVICE_PART1
+    echo $SDDEVICE_PART2
+
+
+    sgdisk --clear -g --new=1:$PAYLOAD_SECTOR_START:$PAYLOAD_SECTOR_END --new:2:512M:0 --typecode=1:3000 --typecode=2:8300 $SDDEVICE
+
+    dd if=$PAYLOAD of=$SDDEVICE_PART1 status=progress oflag=sync bs=1M
+
+fi
+
+

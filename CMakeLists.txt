@@ -317,6 +317,14 @@ configure_file(
   ${CMAKE_SOURCE_DIR}/scripts/test-qemu.sh.in
   ${scripts}/test-qemu.sh
   @ONLY)
+  
+#generate flash-sd script to flash the payload to SD CARD
+if(cva6)
+  configure_file(
+    ${CMAKE_SOURCE_DIR}/scripts/flash-sd.sh.in
+    ${scripts}/flash-sd.sh
+    @ONLY)
+endif()
 
 add_custom_command(OUTPUT ${scripts}/travis.sh
   DEPENDS ${CMAKE_SOURCE_DIR}/scripts ${scripts}
@@ -340,3 +348,8 @@ add_custom_target(
     ./scripts/travis.sh ${CMAKE_SOURCE_DIR}/tests
   COMMENT "Running tests"
 )
+
+###############################################################################
+## CVA6 scripts
+###############################################################################
+
