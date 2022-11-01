@@ -17,6 +17,8 @@ macro(add_patch submodule patch working_directory patch_list)
   list(APPEND ${patch_list} ${patch}.applied)
 endmacro()
 
+
+
 macro(mkdir name dir)
   add_custom_command(OUTPUT ${dir}/.exists
     COMMAND mkdir -p ${dir}
@@ -138,6 +140,8 @@ add_custom_command(OUTPUT ${qemu_wrkdir}/config-host.mak
 )
 
 
+
+
 ###############################################################################
 ## COMPONENT: buildroot
 ###############################################################################
@@ -198,6 +202,8 @@ if(firesim)
   add_patch("linux" "linux${BITS}.firesim.patch" ${linux_srcdir} linux_patches)
 elseif(sifive)
   add_patch("linux" "linux${BITS}.sifive.patch" ${linux_srcdir} linux_patches)
+elseif(cva6)
+  add_patch("linux" "linux${BITS}.cva6.patch" ${linux_srcdir} linux_patches)
 else()
   add_patch("linux" "linux${BITS}.patch" ${linux_srcdir} linux_patches)
 endif()
