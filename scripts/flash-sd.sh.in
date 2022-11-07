@@ -1,3 +1,4 @@
+#!/bin/sh
 
 #check SD Device has been provide
 if [ $# -eq 0 ]; then
