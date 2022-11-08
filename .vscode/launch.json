@@ -1,0 +1,35 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+    {
+        /**
+        * Please follow this procedure to perform debugging of Security Monitor using Visual Studio, OpenOCD, RISCV-GDB
+        * for CVA6 Core on Genesys 2 Board
+        * 1. Clone the https://github.com/riscv/riscv-openocd to any directory
+        * 2. Install dependencies of openocd, see OpenOCD Dependencies section in the readme. more over, also install libusb-1.0-0-dev libftdi1-dev
+        * 3. Go to riscv-openocd folder and call these commands
+        * 3.a ./configure --enable-ftdi
+        * 3.b ./make 
+        * 3.c ./sudo make install
+        * 4.d call 'openocd' to check that openocd installed properly
+        * 5. create FTDI rules, follow https://github.com/openhwgroup/cva6#debugging, also make sure the FTDI JTAG USB Connection is detected by your machines
+        * 6. clone the https://github.com/openhwgroup/cva6
+        * 7. go to cva6 folder, and call these command
+        * 7.a openocd -f corev_apu/fpga/ariane.cfg
+        * 8. Launch VS Code CVA6 Debugger and put breakpoint to any files in the sm folder
+        */
+        "name": "CVA6 Debugger",
+        "type": "cppdbg",
+        "MIMode": "gdb",
+        "request": "launch",
+        "miDebuggerPath": "${workspaceRoot}/riscv64/bin/riscv64-unknown-elf-gdb",
+        "program": "${workspaceRoot}/build/sm.build/platform/fpga/ariane/firmware/fw_payload.elf",
+        "miDebuggerServerAddress": "localhost:3333",
+        "cwd": "${workspaceRoot}/sm"
+    },
+       
+    ]
+}
